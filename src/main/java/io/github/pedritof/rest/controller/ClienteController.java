@@ -2,16 +2,22 @@ package io.github.pedritof.rest.controller;
 
 import io.github.pedritof.domain.entity.Cliente;
 import io.github.pedritof.domain.repository.Clientes;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/clientes")
+@Api("Api Clientes")
 public class ClienteController {
 
     private Clientes clientes;
@@ -21,6 +27,11 @@ public class ClienteController {
     }
 
     @GetMapping("{id}")
+    @ApiOperation("Obter detalhes de um cliente")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Cliente encontrado"),
+            @ApiResponse(code = 404, message = "Cliente não encontrado.")
+    })
     public Cliente getClienteById(@PathVariable Integer id) {
         return clientes
                 .findById(id)
@@ -29,7 +40,12 @@ public class ClienteController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Cliente save(@RequestBody Cliente cliente) {
+    @ApiOperation("Salva um novo cliente")
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "Cliente salvo com sucesso."),
+            @ApiResponse(code = 400, message = "Erro de validação.")
+    })
+    public Cliente save(@RequestBody @Valid Cliente cliente) {
         return clientes.save(cliente);
     }
 
@@ -46,7 +62,7 @@ public class ClienteController {
 
     @PutMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@PathVariable Integer id, @RequestBody Cliente cliente) {
+    public void update(@PathVariable Integer id, @RequestBody @Valid Cliente cliente) {
         clientes
                 .findById(id)
                 .map(clienteExistente -> {
@@ -57,6 +73,7 @@ public class ClienteController {
     }
 
     @GetMapping
+    @ApiOperation("Lista todos os clientes")
     public List<Cliente> find( Cliente cliente ){
         ExampleMatcher matcher = ExampleMatcher
                 .matching()

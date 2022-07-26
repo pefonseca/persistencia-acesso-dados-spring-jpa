@@ -1,5 +1,6 @@
-package io.github.pedritof;
+package io.github.pedritof.security.jwt;
 
+import io.github.pedritof.VendasApplication;
 import io.github.pedritof.domain.entity.Usuario;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -14,7 +15,6 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
-import java.util.HashMap;
 
 @Service
 public class JwtService {
@@ -60,7 +60,7 @@ public class JwtService {
         }
     }
 
-    private String obterLoginUsuario(String token) throws ExpiredJwtException {
+    public String obterLoginUsuario(String token) throws ExpiredJwtException {
         return (String) obterClaims(token).getSubject();
     }
 
